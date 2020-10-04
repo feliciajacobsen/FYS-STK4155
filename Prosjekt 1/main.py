@@ -22,7 +22,17 @@ np.random.seed(22)
 def FrankeFunction(x, y):
     """
     Defining Franke function that take two
-    independent variables and returns
+    independent variables and returns franke Function
+    fit on these two variables.
+
+    Params:
+    x: Array
+        independent input variable
+    y: Array
+        independent input variable
+
+    Returns:
+    array with same dimension as x and y.
     """
     term1 = 0.75 * np.exp(-(0.25 * (9 * x - 2) ** 2) - 0.25 * ((9 * y - 2) ** 2))
     term2 = 0.75 * np.exp(-((9 * x + 1) ** 2) / 49.0 - 0.1 * (9 * y + 1))
@@ -56,10 +66,48 @@ def design_matrix(x, y, degree):
 
 
 def R2(y_data, y_model):
+    """
+    Computed r2 score for predictive model.
+
+    Params:
+    y_data: Array
+        array real data points
+    y_model: Array
+        array of predicted response by trained model
+
+    Returns:
+    R2 score of preditive model
+    """
     return 1 - np.sum((y_data - y_model) ** 2) / np.sum((y_data - np.mean(y_data)) ** 2)
 
 
 def MSE_R2_vs_poly(x, y, degrees, z):
+    """
+    Computing MSE of test and training data for every degree
+    and r2 score for test and training data.
+
+    Params:
+    x: Array
+        input data
+    y: Array
+        input data
+    degrees: List
+        list of polynomial degrees
+    z: Array
+        response data.
+
+    Returns:
+    OLS: Array
+        beta coefficients of OLS
+    MSE_test: List
+        list of MSE for OLS predicted on test data
+    MSE_train: List
+        list of MSE for OLS predicted on training data
+    R2_test: list
+        list of R2 score of OLS model predicted on test data
+    R2_train: list
+        list of R2 score of OLS model predicted on training data
+    """
     z_OLS_pred_test, z_OLS_pred_train = [], []
     MSE_test, MSE_train = [], []
     R2_test, R2_train = [], []
@@ -95,6 +143,21 @@ def MSE_R2_vs_poly(x, y, degrees, z):
 
 
 def plot_MSE_R2_vs_degree(x, y, degrees, z):
+    """
+    Plots MSE of test and training data vs degree,
+    and r2 score for test and training data vs degree.
+
+    Params:
+    x, y: Array
+        input data
+    degrees: List
+        list of polynomial degrees
+    z: Array
+        response data.
+
+    Returns:
+    None
+    """
     OLS, MSE_test, MSE_train, R2_test, R2_train = MSE_R2_vs_poly(x, y, degrees, z)
 
     best_index = np.argmin(MSE_test)
@@ -127,6 +190,13 @@ def betas_variance_plot(degree):
     """
     Computing variance for every estimator
     in OLS with a feature matrix up 5th degree
+
+    Params:
+    degree: list
+        list of integers of polynomial degrees
+
+    Returns:
+    None
     """
     X = design_matrix(x, y, degree)
     betas, MSE_test, MSE_train, R2_test, R2_train = MSE_R2_vs_poly(x, y, [5], z)
@@ -172,6 +242,20 @@ def betas_variance_plot(degree):
 
 
 def bootstrap_indices(N):
+    """
+    Function produces bootstrap indices
+    and out of bag(OOB) indices
+
+    Params:
+    N: int
+        integer of length of array we want to split
+
+    Returns:
+    boot_index: list
+        list of integers/indices selected by bootstrap
+    OOB_index: List
+        list of indices not included in boot_index
+    """
     boot_index = np.random.randint(0, N, N)
 
     # Out of bag samples, indices not in bootstrap sample
@@ -181,6 +265,16 @@ def bootstrap_indices(N):
 
 
 def bootstrap_bias_variance_plot(degrees, n_bootstraps):
+    """
+    Function plots bias vs variance for every degree
+    in OLS after performing boostrap.
+
+    Params:
+    degrees: List
+        list of integers of degrees to include
+    n_bootstraps: int
+        no. of bootstraps to perform
+    """
     z_OLS_pred_test, z_OLS_pred_train = [], []
     MSE_test_b, MSE_train_b = [], []
     MSE_test, MSE_train = [], []
@@ -279,6 +373,14 @@ def OLS_CV(K, degree, z):
     Function takes no. of folds(K) as argument and
     model complexity(polynomial degrees) and cross validates
     K times. Plots MSE of test set vs. polynomial degree.
+
+    Params:
+    K: int
+        integer of no. of folds in CV.
+    degree: list
+        list of degrees to include in model.
+    z: array
+        array of response data.
     """
 
     z_OLS_pred_test = []
@@ -348,6 +450,17 @@ def Ridge_CV(K, degrees, z):
     """
     Function tunes polynomial degree in model
     and penalty lambda in Ridge by CV
+
+    Params:
+    K: int
+        Number of folds
+    degrees: list
+        List of integers with degrees to use
+    z: array
+        array of response data
+
+    Returns:
+    None
     """
 
     log_lambdas = np.linspace(-5, 1, 7)
@@ -421,6 +534,21 @@ def Ridge_CV(K, degrees, z):
 
 
 def Ridge_bootstrap(degrees, n_bootstraps, z):
+    """
+    Function tunes polynomial degree in model
+    and penalty lambda in Ridge by bootstrap.
+
+    Params:
+    degrees: list
+        List of integers with degrees to use
+    n_bootstraps: int
+        Number of bootstrap resamples to perform
+    z: array
+        array of response data
+
+    Returns:
+    None
+    """
     z_ridge_pred_test = []
     log_lambdas = np.linspace(-5, 1, 7)
     lambdas = 10 ** log_lambdas
@@ -480,6 +608,23 @@ def Ridge_bootstrap(degrees, n_bootstraps, z):
 
 
 def Lasso_CV(K, degrees, log_lambdas, z):
+    """
+    Function tunes polynomial degree
+    and penalty lambda in LASSO by CV
+
+    Params:
+    K: int
+        Number of folds
+    degrees: list
+        List of integers with degrees to use
+    log_lambdas: array
+        Array of log of penalty parameters which model will tune
+    z: array
+        array of response data
+
+    Returns:
+    None
+    """
     lambdas = 10 ** log_lambdas
     MSE_degree_lambda = np.zeros((len(degrees), len(lambdas)))
     z_lasso_pred_test = []
@@ -538,6 +683,23 @@ def Lasso_CV(K, degrees, log_lambdas, z):
 
 
 def Lasso_bootstrap(degrees, log_lambdas, n_bootstraps, z):
+    """
+    Function tunes polynomial degree in model
+    and penalty lambda in Lasso by bootstrap
+
+    Params:
+    K: int
+        Number of folds
+    degrees: list
+        List of integers with degrees to use
+    n_bootstraps: int
+        Number of bootstraps to perform
+    z: array
+        array of response data
+
+    Returns:
+    None
+    """
     z_lasso_pred_test = []
     lambdas = 10 ** log_lambdas
     MSE_degree_lambda = np.zeros((len(degrees), len(lambdas)))
