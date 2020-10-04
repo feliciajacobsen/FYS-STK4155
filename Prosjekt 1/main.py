@@ -911,9 +911,9 @@ def terrain(K, degrees, log_lambdas, method):
         plt.ylabel(r"$log_{10} \lambda$")
         plt.show()
 
-        """
-        Kjoreeksempel: Ridge CV : Best degree=14, with best lambda=1.0e-05
-        """
+
+        #Kjoreeksempel: Ridge CV : Best degree=6, with best lambda=1.0e-05
+
 
 
 if __name__ == "__main__":
