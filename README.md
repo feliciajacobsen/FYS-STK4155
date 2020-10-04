@@ -11,7 +11,10 @@ Analysis of the different Linear regression methods such as
 * Ordinary least squares,
 * Ridge regression,
 * Lasso regression.
+
 As well as resampling methods applied on the methods above such as cross validation and bootstrap.
+
+These methods will also be applied onto real terrain data. 
 
 ###### Project 2
 In the making.
