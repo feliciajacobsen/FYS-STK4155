@@ -752,6 +752,26 @@ def Lasso_bootstrap(degrees, log_lambdas, n_bootstraps, z):
 
 
 def terrain(K, degrees, log_lambdas, method):
+    """
+    Function tunes polynomial degree for OLS and
+    degree and penalty parameter lambda for Ridge and Lasso
+    by K-fold CV on real terrain data.
+    Plots MSE vs. hyperparameters for every method.
+
+    Params:
+    K: int
+        Number of folds
+    degrees: list
+        List of integers with degrees to use
+    log_lambdas: array
+        array of log of lambdas to tune by CV
+    method: str
+        string of regression method to use,
+        can only take "OLS", "Ridge" or "Lasso."
+
+    Returns:
+    None
+    """
     # Load the terrain
     z_mesh = imread("lyngdal.tif")  # 3601 x 1801 data
     x = np.linspace(0, z_mesh.shape[0] - 1, z_mesh.shape[0]).reshape(-1, 1)
