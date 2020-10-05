@@ -913,6 +913,7 @@ def terrain(K, degrees, log_lambdas, method):
 
 
         #Kjoreeksempel: Ridge CV : Best degree=6, with best lambda=1.0e-05
+        #Kjoreeksempel 2: Lasso CV : Best degree=14, with best lambda=1.0e-05
 
 
 
@@ -930,4 +931,4 @@ if __name__ == "__main__":
     #Lasso_bootstrap([i for i in range(3, 10 + 1)], np.linspace(-5, 1, 7), 100, z)
     #terrain(5, [i for i in range(3, 15 + 1)], np.linspace(-5, 1, 7), "OLS")
     #terrain(5, [i for i in range(5, 15 + 1)], np.linspace(-5, 1, 7), "Ridge")
-    #terrain(5, [i for i in range(5, 15 + 1)], np.linspace(-5, 1, 7), "Lasso")
+    terrain(5, [i for i in range(5, 15 + 1)], np.linspace(-5, 1, 7), "Lasso")
