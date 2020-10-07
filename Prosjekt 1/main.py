@@ -530,8 +530,6 @@ def Ridge_CV(K, degrees, z):
         f"Ridge CV: Best degree={degrees[best_index[0,0]]:1.1f}, with best lambda={lambdas[best_index[0,1]]:1.1e}"
     )
 
-    # Kjoreeksempel : Ridge CV: Best degree=6.0, with best lambda=1.0e-05
-
 
 def Ridge_bootstrap(degrees, n_bootstraps, z):
     """
@@ -603,8 +601,6 @@ def Ridge_bootstrap(degrees, n_bootstraps, z):
     plt.xlabel("Poly. degree")
     plt.ylabel(r"$log_{10} \lambda$")
     plt.show()
-
-    # Kjoreeksempel: Ridge bootstrap: Best degree=9.0, with best lambda=1.0e-02
 
 
 def Lasso_CV(K, degrees, log_lambdas, z):
@@ -679,7 +675,6 @@ def Lasso_CV(K, degrees, log_lambdas, z):
         f"Lasso CV : Best degree={degrees[best_index[0,0]]:1.0f}, with best lambda={lambdas[best_index[0,1]]:1.1e}"
     )
 
-    # Kjoreeksempel: Lasso CV : Best degree=5, with best lambda=1.0e-05
 
 
 def Lasso_bootstrap(degrees, log_lambdas, n_bootstraps, z):
@@ -748,7 +743,6 @@ def Lasso_bootstrap(degrees, log_lambdas, n_bootstraps, z):
     plt.ylabel(r"$log_{10} \lambda$")
     plt.show()
 
-    # Kjoreeksempel: Lasso bootstrap: Best degree=7.0, with best lambda=1.0e-05
 
 
 def terrain(K, degrees, log_lambdas, method):
@@ -912,9 +906,6 @@ def terrain(K, degrees, log_lambdas, method):
         plt.show()
 
 
-        #Kjoreeksempel: Ridge CV : Best degree=6, with best lambda=1.0e-05
-        #Kjoreeksempel 2: Lasso CV : Best degree=14, with best lambda=1.0e-05
-
 
 
 if __name__ == "__main__":
@@ -931,4 +922,4 @@ if __name__ == "__main__":
     #Lasso_bootstrap([i for i in range(3, 10 + 1)], np.linspace(-5, 1, 7), 100, z)
     #terrain(5, [i for i in range(3, 15 + 1)], np.linspace(-5, 1, 7), "OLS")
     #terrain(5, [i for i in range(5, 15 + 1)], np.linspace(-5, 1, 7), "Ridge")
-    terrain(5, [i for i in range(5, 15 + 1)], np.linspace(-5, 1, 7), "Lasso")
+    #terrain(5, [i for i in range(5, 15 + 1)], np.linspace(-5, 1, 7), "Lasso")
