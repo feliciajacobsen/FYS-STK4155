@@ -4,15 +4,23 @@ Dette er en full oversikt av kjøreeksempler for å reprodusere resulatene som v
 
 Kjører funkjsonen:
   plot_MSE_R2_vs_degree(x, y, p, z)
-  med P = [i for i in range(1, 10)],
+  med p = [i for i in range(1, 10)],
 
   Output : Best degree= 5.0 with MSE=0.04, and R2=0.69.
+
+Kjører funksjonen:
+  bootstrap_bias_variance_plot(p, n_bootstraps)
+  p = [i for i in range(1, 10)],
+  n_bootstraps=100
+
+  Output: Best degree= 8.0 with MSE=0.0568
 
 Kjører funkjsonen:
   OLS_CV(K, degree, z)
   med p= [i for i in range(1, 10)],
 
-  Output : Best degree=8.0, MSE=0.05
+  Output : Best degree=8.0, MSE=0.0542
+
 
 Kjører funkjsonen:
   Ridge_CV(K, degree, z)
@@ -20,6 +28,7 @@ Kjører funkjsonen:
   og K = 5.
 
   Output : Ridge CV: Best degree=6.0, with best lambda=1.0e-05
+           With minimum MSE=0.0462
 
 Kjører funkjsonen:
   Ridge_bootstrap(K, degrees, n_bootstraps, z)
@@ -27,6 +36,7 @@ Kjører funkjsonen:
   og n_bootstraps = 100
 
   Output: Ridge bootstrap: Best degree=9.0, with best lambda=1.0e-02
+          With minimum MSE=0.0474
 
 Kjører funksjonen:
   Lasso_CV(K, degrees, log_lambdas, z)
@@ -35,6 +45,7 @@ Kjører funksjonen:
   log_lambdas = np.linspace(-5, 1, 7)
 
   Output: Lasso CV : Best degree=5, with best lambda=1.0e-05
+          With minimum MSE=0.0478
 
 Kjører funksjonen:
   Lasso_bootstrap(degrees, log_lambdas, n_bootstraps, z)
@@ -43,6 +54,8 @@ Kjører funksjonen:
   n_bootstrapsv = 100
 
   Output: Lasso bootstrap: Best degree=7.0, with best lambda=1.0e-05
+          With minimum MSE=0.0483
+
 
 Kjører funkjsonen:
   terrain(K, degrees, log_lambdas, method)

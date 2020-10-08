@@ -344,7 +344,7 @@ def bootstrap_bias_variance_plot(degrees, n_bootstraps):
         MSE_train.append(np.mean(np.array(MSE_train_b)))
     best_index = np.argmin(MSE_test)
     print(
-        f"Best degree= {degrees[best_index]:1.1f} with MSE={MSE_test[best_index]:1.2f}"
+        f"Best degree= {degrees[best_index]:1.1f} with MSE={MSE_test[best_index]:1.4f}"
     )
 
     plt.figure(1)
@@ -434,7 +434,7 @@ def OLS_CV(K, degree, z):
 
     best_index = np.argmin(MSE_for_every_degree)
     print(
-        f"Best degree={degree[best_index]:1.1f}, MSE={MSE_for_every_degree[best_index]:1.2f}"
+        f"Best degree={degree[best_index]:1.1f}, MSE={MSE_for_every_degree[best_index]:1.4f}"
     )
 
     plt.plot(degree, MSE_for_every_degree, label="Test-set")
@@ -529,6 +529,7 @@ def Ridge_CV(K, degrees, z):
     print(
         f"Ridge CV: Best degree={degrees[best_index[0,0]]:1.1f}, with best lambda={lambdas[best_index[0,1]]:1.1e}"
     )
+    print(f"With minimum MSE={np.min(MSE_degree_lambda):1.4f}")
 
 
 def Ridge_bootstrap(degrees, n_bootstraps, z):
@@ -587,6 +588,7 @@ def Ridge_bootstrap(degrees, n_bootstraps, z):
     print(
         f"Ridge bootstrap: Best degree={degrees[best_index[0,0]]:1.1f}, with best lambda={lambdas[best_index[0,1]]:1.1e}"
     )
+    print(f"With minimum MSE={np.min(MSE_degree_lambda):1.4f}")
 
     # Heatmap of MSE
     plt.title(f"MSE of Ridge with {n_bootstraps:1.1f} bootstraps")
@@ -674,6 +676,7 @@ def Lasso_CV(K, degrees, log_lambdas, z):
     print(
         f"Lasso CV : Best degree={degrees[best_index[0,0]]:1.0f}, with best lambda={lambdas[best_index[0,1]]:1.1e}"
     )
+    print(f"With minimum MSE={np.min(MSE_degree_lambda):1.4f}")
 
 
 
@@ -728,6 +731,7 @@ def Lasso_bootstrap(degrees, log_lambdas, n_bootstraps, z):
     print(
         f"Lasso bootstrap: Best degree={degrees[best_index[0,0]]:1.1f}, with best lambda={lambdas[best_index[0,1]]:1.1e}"
     )
+    print(f"With minimum MSE={np.min(MSE_degree_lambda):1.4f}")
 
     # Heatmap of MSE
     plt.title(f"MSE of Lasso with {n_bootstraps:1.1f} bootstraps")
