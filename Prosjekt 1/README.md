@@ -8,3 +8,6 @@ main.py:
 
 kjore_eksempel.txt:
 * Contain full text file of sample runs from terminal from main.py
+
+Project_1.pdf:
+* Contain full report of the project.
