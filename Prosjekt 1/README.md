@@ -11,3 +11,6 @@ kjore_eksempel.txt:
 
 Project_1.pdf:
 * Contain full report of the project.
+
+lyngdal.tif:
+* Contain full dataset of terrain data used in main.py
