@@ -12,6 +12,18 @@ from gradient_descent import SGD
 from franke import FrankeFunction, make_data
 
 def accuracy_func(y, y_pred):
+    """
+    Functions calculates accuracy of classification.
+
+    Params:
+        y: vector
+            True labels which is one hot-encoded,
+            and is an 1-D array of probabilities
+        y_pred: vector
+            Predicted output which is an 1-D array of probabilities
+    Returns:
+        float which is the fraction of accuratly predicted classes.
+    """
     corr = 0
     wrong = 0
     N = y.shape[0]
@@ -25,7 +37,26 @@ def accuracy_func(y, y_pred):
 
 class FFNN:
     """
-    Felo´s nevronett
+    Feed Foward Neural network. Takes a list of nodes in a given layer
+    and a list of activation function for each hidden layer.
+    Can do both classification and regression depending on the
+    choice of activation in the last hidden layer.
+
+    This function takes a flexible no. of nodes and layers.
+
+    Params:
+        layers: list
+            list of no of nodes for each layer, including
+            input and output layer.
+
+        activation_functions: list of strings
+            list of strings specifying each activation function
+            for each hidden layer.
+
+    Returns
+        y: vector
+            Vector of predicted outputs. If back_prop function is called
+            before prediction, then we train the network.
     """
     def __init__(self, layers, activation_functions):
         self.layers = layers
@@ -83,11 +114,42 @@ class FFNN:
 
 
     def forward_pass(self, x):
+        """
+        Predicts a output based on initial input and
+        pass it through network and activates with activation Functions
+        for each hidden layer.
+
+        Params:
+            x: Array
+
+        Returns:
+            Array of activated output from input and hidden layers
+        """
         for i in range(len(self.layers) - 1):
             x = self.activation_functions[i]((x @ self.weights[i]) + self.biases[i])
         return x
 
     def back_prop(self, x, y, learning_rate, epochs, batch_size):
+        """
+        This function trains the neural network
+        for classification or regression.
+
+        Params:
+            x: array
+                array of shape (no. of observations, no. of features).
+            y: array
+                vector of output data.
+            learning_rate: float
+                the learning rate of the stochastic gradient descent.
+            epochs: int
+                specifies the no. of times the whole dataset has
+                been passed through and back the network.
+            batch_size: int
+                size of mini-batches to part the dataset in.
+
+        Returns:
+            None
+        """
         N = x.shape[0]
         for e in range(epochs):
             for batch in range(floor(N / batch_size)):
@@ -125,7 +187,7 @@ class FFNN:
 
 
 if __name__ == "__main__":
-    """
+
     # Define layers and no. of nodes in each layer
     net = FFNN(
         layers=[2, 40, 25, 10, 1],
@@ -175,7 +237,7 @@ if __name__ == "__main__":
     ax = fig.gca(projection="3d")
     ax.plot_surface(xm, ym, zflat.reshape(xm.shape))
     plt.show()
-    """
+
 
     # Import MNIST dataset
     digits = datasets.load_digits()
@@ -200,7 +262,7 @@ if __name__ == "__main__":
     # Train on training set
     net.back_prop(X_train, y_train, learning_rate=0.01, epochs=1000, batch_size=32)
 
-    # Predict on test set
+    # Predict on test set return probabilities of being in a given class
     y_pred = net.forward_pass(X_test)
 
     accuracy = accuracy_func(y_test, y_pred)

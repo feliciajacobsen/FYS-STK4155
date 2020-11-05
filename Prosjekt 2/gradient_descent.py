@@ -12,6 +12,30 @@ from franke import make_data
 
 
 def SGD(X, y, betas, eta, epochs, lam, batch_size):
+    """
+    Linear regression algorithm using
+    stochastic gradient descent with mini-batches.
+
+    Params:
+        X: Array
+            array of observations(rows) and features(columns).
+        y: vector
+            vector of output values.
+        eta: float
+            learning rate.
+        epochs: int
+            the number of epochs to perform SGD.
+        lam: float
+            value of L2 regularization. If zero, then we use OLS.
+        batch_size: int
+            the no. of mini-batches.
+
+    Returns:
+        betas: vector
+            Array of estimated coefficients for regression model.
+        MSE: list
+            List of computed MSE for predicted output and true output.
+    """
     MSE = []
     N = y.shape[0]
     for i in range(epochs):
