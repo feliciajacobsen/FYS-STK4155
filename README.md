@@ -17,7 +17,9 @@ As well as resampling methods applied on the methods above such as cross validat
 These methods will also be applied onto real terrain data. 
 
 ###### Project 2
-In the making.
+Analysis of SGD methods and Feed Foward Neural Network(FFNN) as regressor and classifier.
+The FFNN is used as a regressor on the Franke function, as a classifier of the MNIST dataset.
+
 
 ###### Project 3
 In the making.
