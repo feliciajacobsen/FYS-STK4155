@@ -36,28 +36,32 @@ def SGD(X, y, betas, eta, epochs, lam, batch_size):
         MSE: list
             List of computed MSE for predicted output and true output.
     """
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
     MSE = []
-    N = y.shape[0]
+    N = y_train.shape[0]
     for i in range(epochs):
         for j in range(floor(N / batch_size)):
             random_idx = np.random.randint(0, N, size=batch_size)
 
             if lam == 0:
                 cost_gradient = np.mean(
-                    -2 * (y[random_idx] - (X[random_idx, :] @ betas)), axis=0
+                    -2 * (y_train[random_idx] - (X_train[random_idx, :] @ betas)), axis=0
                 )
             if lam > 0:
-                cost_gradient = np.mean(-2 * X[random_idx, :].T*(y[random_idx] - (X[random_idx, :] @ betas)).T+ 2 * lam * betas)
+                cost_gradient = np.mean(-2 * X_train[random_idx, :].T*(y_train[random_idx] - (X_train[random_idx, :] @ betas)).T+ 2 * lam * betas)
 
             betas -= eta * cost_gradient
-        MSE.append(mean_squared_error(y, (X @ betas)))
-
+        MSE.append(mean_squared_error(y_test, (X_test @ betas)))
     return betas, MSE
 
 
 if __name__ == "__main__":
+    # Get input and output data
     x, y, z = make_data(n_points=1000)
-    print(x[0], y[0])
+
+    # Gather output data in common martix
     X = PolynomialFeatures(5).fit_transform(np.column_stack((x, y)))
 
     epochs = 50

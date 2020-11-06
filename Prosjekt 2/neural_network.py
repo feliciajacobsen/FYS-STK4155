@@ -11,6 +11,8 @@ from sklearn import datasets
 from gradient_descent import SGD
 from franke import FrankeFunction, make_data
 
+
+
 def accuracy_func(y, y_pred):
     """
     Functions calculates accuracy of classification.
@@ -256,6 +258,9 @@ if __name__ == "__main__":
         #activation_functions=["relu6", "relu6", "relu6", "relu6", "relu6", "softmax"],
         activation_functions=["tanh", "tanh", "tanh", "tanh", "tanh", "softmax"],
     )
+    # Accuracy = 0.96, for layers=[X.shape[1], 300, 200, 150, 100, 70, 10]
+    # and activation_functions=["tanh", "tanh", "tanh", "tanh", "tanh", "softmax"]
+
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
@@ -278,7 +283,7 @@ if __name__ == "__main__":
         y_test_new.append(np.argmax(y_test[i]))
         y_pred_new.append(np.argmax(y_pred[i]))
 
-    plt.title("Confusion matrix of MNIST dataset")
+    plt.title("Accuracy scores of MNIST dataset")
     sns.heatmap(
         confusion_matrix(y_test_new, y_pred_new),
         cmap="Blues",
