@@ -6,7 +6,7 @@ import seaborn as sns
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
-
+# Local files
 from franke import make_data
 
 

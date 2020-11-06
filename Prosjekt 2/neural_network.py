@@ -8,7 +8,6 @@ from sklearn.metrics import mean_squared_error, accuracy_score, confusion_matrix
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn import datasets
 # Local files
-from gradient_descent import SGD
 from franke import FrankeFunction, make_data
 
 
@@ -246,6 +245,8 @@ if __name__ == "__main__":
     X = digits.images # Images
     X /= np.max(X)
     a = digits.target # Labels
+    
+    # Make output data one-hot encoded
     y = np.zeros((X.shape[0],10))
     for i in range(X.shape[0]):
         y[i, int (a[i])] = 1
@@ -260,7 +261,6 @@ if __name__ == "__main__":
     )
     # Accuracy = 0.96, for layers=[X.shape[1], 300, 200, 150, 100, 70, 10]
     # and activation_functions=["tanh", "tanh", "tanh", "tanh", "tanh", "softmax"]
-
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
