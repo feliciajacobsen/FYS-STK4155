@@ -8,6 +8,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn import datasets
 #Local files
 from franke import make_data
+from neural_network import accuracy_func
 
 
 class logistic_regression:
@@ -21,11 +22,14 @@ class logistic_regression:
         y: vector
             vector of output data
     """
-    def __init__(self, X, y, betas=None):
+    def __init__(self, X, y, initialization=None):
         self.X = X
         self.y = y
-        if betas==None:
-            self.betas = (np.random.random(X.shape[1]) - 0.5).reshape(-1, 1)
+        if initialization==None:
+            self.weights = (np.random.random((y.shape[1], X.shape[1])) - 0.5)
+
+    def softmax(self, x):
+        return np.exp(x)/np.sum(np.exp(x), axis=1).reshape(-1,1)
 
 
     def SGD(self, eta, epochs, lam, batch_size):
@@ -48,7 +52,7 @@ class logistic_regression:
                 the no. of mini-batches.
 
         Returns:
-            betas: vector
+            weights: vector
                 Array of estimated coefficients for regression model.
             MSE: list
                 List of computed MSE for predicted output and true output.
@@ -56,26 +60,25 @@ class logistic_regression:
 
         X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, test_size=0.2)
 
-        MSE = []
-        N = y_train.shape[0]
+        acc = []
+        y_pred = []
+        N = y_train.shape[0] # 1437
+
         for i in range(epochs):
-            for j in range(floor(N / batch_size)):
+            for j in range(floor(N / batch_size)): # 0, ..., 94
                 random_idx = np.random.randint(0, N, size=batch_size)
 
-                if lam == 0:
-                    cost_gradient = np.mean(
-                        -2 * (y_train[random_idx] - (X_train[random_idx, :] @ self.betas)), axis=0
-                    )
-                if lam > 0:
-                    cost_gradient = np.mean(-2 * X_train[random_idx, :].T*(y_train[random_idx] - (X_train[random_idx, :] @ self.betas)).T+ 2 * lam * self.betas)
+                y_pred = self.softmax(X_train[random_idx, :] @ self.weights.T)
 
-                self.betas -= eta * cost_gradient
+                cost_gradient = (y_pred - y_train[random_idx,:]).T @ X_train[random_idx,:]
 
-                y_pred = 1. / (1. + np.exp(-(X_test @ self.betas)))
+                self.weights -= (eta * cost_gradient / batch_size) + ((eta * lam / N) * self.weights)
 
-            MSE.append(mean_squared_error(y_test, y_pred))
+            acc.append(accuracy_func(y_test,self.softmax(X_test @ self.weights.T)))
 
-        return y_pred, MSE
+        y_pred_new = self.softmax(X_test @ self.weights.T)
+
+        return y_test, y_pred_new, np.array(acc)
 
 if __name__ == "__main__":
     # Import MNIST dataset
@@ -93,10 +96,27 @@ if __name__ == "__main__":
     n_inputs = X.shape[0]
     X = X.reshape(n_inputs, -1) # shape = (1797, 64), n_inputs, n_features
 
-    reg = logistic_regression(X,y)
-    epochs=100
-    y_pred, MSE = reg.SGD(eta=0.001, epochs=epochs, lam=0.001, batch_size=15)
+    reg = logistic_regression(X,y,initialization=None)
+    epochs = 1000
+    lam = 0.0
+    y_test, y_pred, acc = reg.SGD(eta=0.001, epochs=epochs, lam=0.1, batch_size=15)
 
+    print(f"Total accuracy og test data after training is {accuracy_func(y_test,y_pred):1.2f}")
+    plt.title(f"Accuracy (%) on the MNIST test data")
     epochs_arr = np.linspace(0, epochs - 1, epochs)
-    plt.plot(epochs_arr, MSE)
+    plt.plot(epochs_arr, acc)
+    plt.xlabel("Epochs")
+    plt.ylabel("Accuracy")
+    plt.show()
+
+    lam = [1,0.1,0.01,0.001]
+    for l in lam:
+        y_test, y_pred, acc = reg.SGD(eta=0.001, epochs=epochs, lam=i, batch_size=15)
+        plt.plot(epochs_arr, acc, label=r"log($\lambda$)="+f"{log10(i):1.1f}, accuracy = {accuracy_func(y_test,y_pred):1.2f}")
+        plt.legend()
+
+    plt.title("Accuracy (%) on the MNIST test data with L2 regularization")
+    plt.plot(epochs_arr, acc)
+    plt.xlabel("Epochs")
+    plt.ylabel("Accuracy")
     plt.show()

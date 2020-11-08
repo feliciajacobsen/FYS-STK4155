@@ -40,20 +40,21 @@ def SGD(X, y, betas, eta, epochs, lam, batch_size):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     MSE = []
-    N = y_train.shape[0]
+    N = y.shape[0]
     for i in range(epochs):
         for j in range(floor(N / batch_size)):
             random_idx = np.random.randint(0, N, size=batch_size)
 
             if lam == 0:
                 cost_gradient = np.mean(
-                    -2 * (y_train[random_idx] - (X_train[random_idx, :] @ betas)), axis=0
+                    -2 * (y[random_idx] - (X[random_idx, :] @ betas)), axis=0
                 )
+            
             if lam > 0:
-                cost_gradient = np.mean(-2 * X_train[random_idx, :].T*(y_train[random_idx] - (X_train[random_idx, :] @ betas)).T+ 2 * lam * betas)
+                cost_gradient = np.mean(-2 * X[random_idx, :].T*(y[random_idx] - (X[random_idx, :] @ betas)).T+ 2 * lam * betas)
 
             betas -= eta * cost_gradient
-        MSE.append(mean_squared_error(y_test, (X_test @ betas)))
+        MSE.append(mean_squared_error(y, (X @ betas)))
     return betas, MSE
 
 
@@ -64,11 +65,11 @@ if __name__ == "__main__":
     # Gather output data in common martix
     X = PolynomialFeatures(5).fit_transform(np.column_stack((x, y)))
 
-    epochs = 50
+    epochs = 80
     epochs_arr = np.linspace(0, epochs - 1, epochs)
     lam = 0.1
 
-    batch_size = np.array([1,5,10,15,20,25])
+    batch_size = np.array([2,4,8,16])
     random_betas = (np.random.random(X.shape[1]) - 0.5).reshape(-1, 1)
     for i in batch_size:
         # Perform SGD
@@ -107,7 +108,7 @@ if __name__ == "__main__":
         for j, lam in enumerate(lambdas):
              b, m = SGD(X=X, y=z, betas=random_betas, eta=eta, epochs=epochs, lam=lam, batch_size=15)
              MSE[i,j] = np.mean(np.array(m))
-    plt.title("MSE of SGD with 15 mini batches with L2 penalty")
+    plt.title("MSE of SGD with 15 mini-batches with L2 penalty")
     sns.heatmap(
         MSE.T,
         cmap="RdYlGn_r",
