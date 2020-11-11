@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from math import floor
+from math import floor, log10
 import seaborn as sns
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import SGDClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn import datasets
 #Local files
 from franke import make_data
@@ -52,10 +54,12 @@ class logistic_regression:
                 the no. of mini-batches.
 
         Returns:
-            weights: vector
-                Array of estimated coefficients for regression model.
-            MSE: list
-                List of computed MSE for predicted output and true output.
+            y_test: vector
+                1D Array of true output
+            y_pred_new: vector
+                Array of estimated output based on test input values
+            acc: Array
+                array of accuracies of predicted test data for every epoch
         """
 
         X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, test_size=0.2)
@@ -99,9 +103,12 @@ if __name__ == "__main__":
     reg = logistic_regression(X,y,initialization=None)
     epochs = 1000
     lam = 0.0
-    y_test, y_pred, acc = reg.SGD(eta=0.001, epochs=epochs, lam=0.1, batch_size=15)
+    y_test, y_pred, acc = reg.SGD(eta=0.001, epochs=epochs, lam=lam, batch_size=15)
 
     print(f"Total accuracy og test data after training is {accuracy_func(y_test,y_pred):1.2f}")
+    #Total accuracy og test data after training is 0.95
+    #Total accuracy og test data after training is 0.96
+
     plt.title(f"Accuracy (%) on the MNIST test data")
     epochs_arr = np.linspace(0, epochs - 1, epochs)
     plt.plot(epochs_arr, acc)
@@ -109,14 +116,26 @@ if __name__ == "__main__":
     plt.ylabel("Accuracy")
     plt.show()
 
-    lam = [1,0.1,0.01,0.001]
-    for l in lam:
-        y_test, y_pred, acc = reg.SGD(eta=0.001, epochs=epochs, lam=i, batch_size=15)
-        plt.plot(epochs_arr, acc, label=r"log($\lambda$)="+f"{log10(i):1.1f}, accuracy = {accuracy_func(y_test,y_pred):1.2f}")
+    lams = [1,0.1,0.01,0.001]
+    for l in lams:
+        reg = logistic_regression(X,y,initialization=None)
+        y_test, y_pred, acc = reg.SGD(eta=0.001, epochs=epochs, lam=l, batch_size=15)
+        plt.plot(epochs_arr, acc, label=r"log10($\lambda$)="+f"{log10(l):1.1f}, accuracy = {accuracy_func(y_test,y_pred):1.2f}")
         plt.legend()
 
     plt.title("Accuracy (%) on the MNIST test data with L2 regularization")
-    plt.plot(epochs_arr, acc)
     plt.xlabel("Epochs")
     plt.ylabel("Accuracy")
     plt.show()
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    sklearn_FFNN = MLPClassifier(
+        hidden_layer_sizes=(X.shape[0], 10),
+        alpha=0.001,
+        learning_rate="constant",
+        learning_rate_init=0.01,
+        max_iter=1000,
+    ).fit(X_train, y_train)
+
+    sk_y_pred = sklearn_FFNN.predict(X_test)
+    print(f"Total accuracy og test data predicted by sklearn={accuracy_func(y_test,sk_y_pred):1.2f}")

@@ -166,15 +166,21 @@ class FFNN:
                     z.append((a[i] @ self.weights[i]) + self.biases[i])
                     a.append(self.activation_functions[i](z[i]))
 
+                # Initialize for last layer, [-1]
                 gradient_cost = a[-1] - y_batch  # True for MSE and Cross Entropy (given softmax activation for last layer)
                 delta = (
                     self.activation_derivatives[-1](a[-1]) * gradient_cost
-                )  # delta_L (last layer)
+                )  # Local gradient, delta_L (last layer)
                 self.dB = [np.mean(delta, axis=0)]
                 self.dW = [a[-2].T @ delta]
 
                 # Back propagate, fill these lists: dW and dB
-                for i in range(2, L):  # Loop goes from first to last layer
+                for i in range(2, L):
+                    """
+                    Loop going between all hidden layers,
+                    and goes from last layer to first,
+                    must start from 2 because we use -i.
+                    """
                     delta = (
                         delta @ self.weights[-i + 1].T
                     ) * self.activation_derivatives[-i](a[-i])
@@ -239,13 +245,13 @@ if __name__ == "__main__":
     ax.plot_surface(xm, ym, zflat.reshape(xm.shape))
     plt.show()
 
-
+    # Test NN for classification:
     # Import MNIST dataset
     digits = datasets.load_digits()
     X = digits.images # Images
     X /= np.max(X)
     a = digits.target # Labels
-    
+
     # Make output data one-hot encoded
     y = np.zeros((X.shape[0],10))
     for i in range(X.shape[0]):
