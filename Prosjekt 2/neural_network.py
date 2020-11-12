@@ -17,12 +17,14 @@ def accuracy_func(y, y_pred):
     Functions calculates accuracy of classification.
 
     Params:
+    --------
         y: vector
-            True labels which is one hot-encoded,
-            and is an 1-D array of probabilities
+            True labels, 1D array.
         y_pred: vector
-            Predicted output which is an 1-D array of probabilities
+            True labels which is one hot-encoded,
+            and is a matrix of probabilities.
     Returns:
+    --------
         float which is the fraction of accuratly predicted classes.
     """
     corr = 0
@@ -46,6 +48,7 @@ class FFNN:
     This function takes a flexible no. of nodes and layers.
 
     Params:
+    --------
         layers: list
             list of no of nodes for each layer, including
             input and output layer.
@@ -55,6 +58,7 @@ class FFNN:
             for each hidden layer.
 
     Returns
+    --------
         y: vector
             Vector of predicted outputs. If back_prop function is called
             before prediction, then we train the network.
@@ -136,6 +140,7 @@ class FFNN:
         for classification or regression.
 
         Params:
+        --------
             x: array
                 array of shape (no. of observations, no. of features).
             y: array
@@ -149,6 +154,7 @@ class FFNN:
                 size of mini-batches to part the dataset in.
 
         Returns:
+        --------
             None
         """
         N = x.shape[0]
@@ -197,11 +203,12 @@ if __name__ == "__main__":
 
     # Define layers and no. of nodes in each layer
     net = FFNN(
-        layers=[2, 40, 25, 10, 1],
-        activation_functions=["leaky_relu", "leaky_relu", "relu", "identity"],
+        layers=[2, 80, 40, 25, 10, 1],
+        activation_functions=["tanh", "relu", "tanh", "leaky_relu", "identity"],
     )
-    # MSE= 0.054 for ["leaky_relu", "leaky_relu", "relu", "identity"], [2, 40, 25, 10, 1], epochs =1000
-    # MSE = 0.058 for ["leaky_relu", "leaky_relu", "sigmoid", "identity"], [2, 40, 25, 10, 1], epochs=10000
+    # MSE= 0.054 for ["leaky_relu", "tanh", "relu", "identity"], [2, 40, 25, 10, 1], epochs= 1000, eta=0.001
+    # MSE= 0.054 for ["leaky_relu", "leaky_relu", "relu", "identity"], [2, 40, 25, 10, 1], epochs =1000, eta=0.001
+    # MSE = 0.058 for ["leaky_relu", "leaky_relu", "sigmoid", "identity"], [2, 40, 25, 10, 1], epochs=10000, eta=0.001
 
     x, y, z = make_data(1000)  # 100 no. of points
 
@@ -212,7 +219,7 @@ if __name__ == "__main__":
     X_train, X_test, z_train, z_test = train_test_split(X, z, test_size=0.2)
 
     # Train on training set
-    net.back_prop(X_train, z_train, learning_rate=0.001, epochs=1000, batch_size=50)
+    net.back_prop(X_train, z_train, learning_rate=0.01, epochs=1000, batch_size=60)
 
     # Predict on test set
     z_pred = net.forward_pass(X_test)
@@ -222,11 +229,11 @@ if __name__ == "__main__":
 
     # FFNN from sklearn
     sklearn_FFNN = MLPRegressor(
-        hidden_layer_sizes=(100, 70, 40, 10),
+        hidden_layer_sizes=(80, 40, 25, 10),
         alpha=0,
         activation="relu",
         learning_rate_init=0.01,
-        max_iter=100,
+        max_iter=1000,
         batch_size=30,
     ).fit(X_train, np.array(z_train).ravel())
 
@@ -243,6 +250,9 @@ if __name__ == "__main__":
     fig = plt.figure()
     ax = fig.gca(projection="3d")
     ax.plot_surface(xm, ym, zflat.reshape(xm.shape))
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel("z")
     plt.show()
 
     # Test NN for classification:
@@ -263,7 +273,8 @@ if __name__ == "__main__":
     net = FFNN(
         layers=[X.shape[1], 300, 200, 150, 100, 70, 10],
         #activation_functions=["relu6", "relu6", "relu6", "relu6", "relu6", "softmax"],
-        activation_functions=["tanh", "tanh", "tanh", "tanh", "tanh", "softmax"],
+        #activation_functions=["tanh", "tanh", "tanh", "tanh", "tanh", "softmax"],
+        activation_functions=["tanh" ,"tanh", "tanh", "tanh", "tanh", "softmax"]
     )
     # Accuracy = 0.96, for layers=[X.shape[1], 300, 200, 150, 100, 70, 10]
     # and activation_functions=["tanh", "tanh", "tanh", "tanh", "tanh", "softmax"]
@@ -271,7 +282,7 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     # Train on training set
-    net.back_prop(X_train, y_train, learning_rate=0.01, epochs=1000, batch_size=32)
+    net.back_prop(X_train, y_train, learning_rate=0.1, epochs=1000, batch_size=15)
 
     # Predict on test set return probabilities of being in a given class
     y_pred = net.forward_pass(X_test)

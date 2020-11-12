@@ -17,6 +17,7 @@ def SGD(X, y, initialization, eta, epochs, lam, batch_size):
     stochastic gradient descent with mini-batches.
 
     Params:
+    --------
         X: Array
             array of observations(rows) and features(columns).
         y: vector
@@ -31,6 +32,7 @@ def SGD(X, y, initialization, eta, epochs, lam, batch_size):
             the no. of mini-batches.
 
     Returns:
+    --------
         betas: vector
             Array of estimated coefficients for regression model.
         MSE: list
@@ -66,12 +68,15 @@ if __name__ == "__main__":
     epochs_arr = np.linspace(0, epochs - 1, epochs)
     lam = 0.0
 
-    batch_size = np.array([2,4,8,16])
+    betas_result, MSE_result = SGD(X=X, y=z, initialization=None, eta=0.01, epochs=epochs, lam=lam, batch_size=15)
+    print(np.mean(MSE_result))
+
+    batch_size = np.array([5,10,20,30,40])
     for i in batch_size:
         # Perform SGD
         betas_result, MSE_result = SGD(X=X, y=z, initialization=None, eta=0.001, epochs=epochs, lam=lam, batch_size=i)
         if lam == 0:
-            plt.title("SGD with mini-batches with OLS regression")
+            plt.title("OLS regression with SGD using batches")
         else:
             plt.title(f"SGD with mini-batches with Ridge regression and penalty={lam:1.2f}")
         plt.plot(epochs_arr, MSE_result, label="Batch size=%s" %i)
@@ -96,7 +101,7 @@ if __name__ == "__main__":
     plt.xlabel("Epochs")
     plt.show()
 
-    log_lambdas = np.linspace(-5, 1, 7)
+    log_lambdas = np.linspace(-6, 1, 8)
     lambdas = 10 ** log_lambdas
     MSE = np.zeros((len(etas), len(lambdas)))
     betas_result = np.zeros((len(etas), len(lambdas)))

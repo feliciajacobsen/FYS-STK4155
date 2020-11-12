@@ -40,6 +40,7 @@ class logistic_regression:
         stochastic gradient descent with mini-batches.
 
         Params:
+        --------
             X: Array
                 array of observations(rows) and features(columns).
             y: vector
@@ -54,6 +55,7 @@ class logistic_regression:
                 the no. of mini-batches.
 
         Returns:
+        --------
             y_test: vector
                 1D Array of true output
             y_pred_new: vector
@@ -103,23 +105,27 @@ if __name__ == "__main__":
     reg = logistic_regression(X,y,initialization=None)
     epochs = 1000
     lam = 0.0
-    y_test, y_pred, acc = reg.SGD(eta=0.001, epochs=epochs, lam=lam, batch_size=15)
+    y_test, y_pred, acc = reg.SGD(eta=0.01, epochs=epochs, lam=lam, batch_size=15)
 
     print(f"Total accuracy og test data after training is {accuracy_func(y_test,y_pred):1.2f}")
-    #Total accuracy og test data after training is 0.95
-    #Total accuracy og test data after training is 0.96
+    #Total accuracy og test data after training is 0.98
 
-    plt.title(f"Accuracy (%) on the MNIST test data")
-    epochs_arr = np.linspace(0, epochs - 1, epochs)
-    plt.plot(epochs_arr, acc)
+    etas = [0.1, 0.01, 0.001, 0.0001]
+    for i in etas:
+        reg = logistic_regression(X,y,initialization=None)
+        y_test, y_pred, acc = reg.SGD(eta=i, epochs=epochs, lam=lam, batch_size=15)
+        plt.plot(epochs_arr, acc, label=r"$\eta$ =" + f"{i:1.1e}, accuracy = {accuracy_func(y_test,y_pred):1.2f}")
+        plt.legend()
+    plt.title("Accuracy (%) on the MNIST test data")
     plt.xlabel("Epochs")
     plt.ylabel("Accuracy")
     plt.show()
 
-    lams = [1,0.1,0.01,0.001]
+
+    lams = [10,1,0.1,0.0001,0.000001]
     for l in lams:
         reg = logistic_regression(X,y,initialization=None)
-        y_test, y_pred, acc = reg.SGD(eta=0.001, epochs=epochs, lam=l, batch_size=15)
+        y_test, y_pred, acc = reg.SGD(eta=0.01, epochs=epochs, lam=l, batch_size=15)
         plt.plot(epochs_arr, acc, label=r"log10($\lambda$)="+f"{log10(l):1.1f}, accuracy = {accuracy_func(y_test,y_pred):1.2f}")
         plt.legend()
 
