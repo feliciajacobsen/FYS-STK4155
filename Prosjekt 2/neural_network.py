@@ -259,7 +259,7 @@ if __name__ == "__main__":
     # Import MNIST dataset
     digits = datasets.load_digits()
     X = digits.images # Images
-    X /= np.max(X)
+    X /= np.max(X) # Scaling
     a = digits.target # Labels
 
     # Make output data one-hot encoded

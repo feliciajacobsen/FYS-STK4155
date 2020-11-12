@@ -105,6 +105,7 @@ if __name__ == "__main__":
     reg = logistic_regression(X,y,initialization=None)
     epochs = 1000
     lam = 0.0
+    epochs_arr = np.linspace(0, epochs-1, epochs)
     y_test, y_pred, acc = reg.SGD(eta=0.01, epochs=epochs, lam=lam, batch_size=15)
 
     print(f"Total accuracy og test data after training is {accuracy_func(y_test,y_pred):1.2f}")
@@ -122,7 +123,7 @@ if __name__ == "__main__":
     plt.show()
 
 
-    lams = [10,1,0.1,0.0001,0.000001]
+    lams = [1000,10,0.1,0.0001,0.000001]
     for l in lams:
         reg = logistic_regression(X,y,initialization=None)
         y_test, y_pred, acc = reg.SGD(eta=0.01, epochs=epochs, lam=l, batch_size=15)
