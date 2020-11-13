@@ -1,6 +1,6 @@
-### Repository structure of Project 2
+## Repository structure of Project 2
 
-## Files contains:
+### Files contains:
 * neural_network.py: Contains full implemented neural network. 
 * gradient_descent.py: Contains linear regression using stochastic gradient descent function.
 * franke.py: contains generated data and used for regression.
