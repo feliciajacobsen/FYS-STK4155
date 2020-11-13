@@ -79,7 +79,7 @@ if __name__ == "__main__":
             plt.title("OLS regression with SGD using batches")
         else:
             plt.title(f"SGD with mini-batches with Ridge regression and penalty={lam:1.2f}")
-        plt.plot(epochs_arr, MSE_result, label="Batch size=%s" %i)
+        plt.plot(epochs_arr, MSE_result, label="No. of mini-batches=%s" %i)
         plt.legend()
 
     plt.ylabel("MSE")
