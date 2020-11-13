@@ -229,11 +229,11 @@ if __name__ == "__main__":
 
     # FFNN from sklearn
     sklearn_FFNN = MLPRegressor(
-        hidden_layer_sizes=(80, 40, 25, 10),
+        hidden_layer_sizes=(100, 70, 40, 10),
         alpha=0,
         activation="relu",
         learning_rate_init=0.01,
-        max_iter=1000,
+        max_iter=100,
         batch_size=30,
     ).fit(X_train, np.array(z_train).ravel())
 
@@ -288,7 +288,7 @@ if __name__ == "__main__":
     y_pred = net.forward_pass(X_test)
 
     accuracy = accuracy_func(y_test, y_pred)
-    print(f"Accuracy = {accuracy:2.2f}")
+    print(f"Accuracy of NN = {accuracy:2.2f}")
 
     if y_test.shape != y_pred.shape:
         print("Warning: predicted output and test output does not have same shape.")

@@ -106,7 +106,7 @@ if __name__ == "__main__":
     epochs = 1000
     lam = 0.0
     epochs_arr = np.linspace(0, epochs-1, epochs)
-    y_test, y_pred, acc = reg.SGD(eta=0.01, epochs=epochs, lam=lam, batch_size=15)
+    y_test, y_pred, acc = reg.SGD(eta=0.1, epochs=epochs, lam=lam, batch_size=15)
 
     print(f"Total accuracy og test data after training is {accuracy_func(y_test,y_pred):1.2f}")
     #Total accuracy og test data after training is 0.98
