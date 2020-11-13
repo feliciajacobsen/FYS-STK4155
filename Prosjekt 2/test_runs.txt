@@ -1,0 +1,73 @@
+Full overview of test runs of Project 2.
+
+
+
+For gradient_descent.py :
+------------------------
+      Runs function:
+          SGD(X, y, initialization, eta, epochs, lam, batch_size)
+
+      Generate data for input:
+          x, y, z = make_data(n_points=1000)
+          X = PolynomialFeatures(5).fit_transform(np.column_stack((x, y)))
+
+      Run function:
+      betas_result, MSE_result = SGD(X=X, y=z, initialization=None, eta=0.01, epochs=1000, lam=0, batch_size=15)
+
+      Print:
+        print(np.mean(MSE_result))
+
+      Output :
+          0.054
+
+
+
+For neural_network.py :
+------------------------
+    Runs function:
+        net = FFNN(
+              layers=[2, 80, 40, 25, 10, 1],
+              activation_functions=["tanh", "relu", "tanh", "leaky_relu", "identity"],
+          )
+        net.back_prop(X_train, z_train, learning_rate=0.01, epochs=1000, batch_size=60)
+        z_pred = net.forward_pass(X_test)
+
+    Print :
+        print(mean_squared_error(z_test, z_pred))
+
+    Output :
+        0.04575407366584903
+
+
+
+    Runs function :
+
+        sklearn_FFNN = MLPRegressor(
+              hidden_layer_sizes=(100, 70, 40, 10),
+              alpha=0,
+              activation="relu",
+              learning_rate_init=0.01,
+              max_iter=100,
+              batch_size=30,
+          ).fit(X_train, np.array(z_train).ravel())
+
+    Print :
+        print(mean_squared_error(z_test, sk_z_pred))
+
+    Output :
+        0.04429660426680414
+
+
+
+
+For logistic_regression.py :
+------------------------
+    Runs function:
+        reg = logistic_regression(X,y,initialization=None)
+        y_test, y_pred, acc = reg.SGD(eta=0.1, epochs=epochs, lam=lam, batch_size=15)
+
+    Print:
+        print(f"Total accuracy og test data after training is {accuracy_func(y_test,y_pred):1.2f}")
+
+    Output:
+        Total accuracy og test data after training is 0.98
