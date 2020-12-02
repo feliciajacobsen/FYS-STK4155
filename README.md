@@ -22,4 +22,7 @@ The FFNN is used as a regressor on the Franke function, as a classifier of the M
 
 
 ###### Project 3
-In the making.
+In this project, Wisconsin breast cancer data were used for this numerical study.
+Two feature selection methods were used on this dataset. The first being Recursive Feature Elimination and the second being feature reduction by removing features with correlation factor. 
+The classifiers used was FFNN and AdaBoost. 
+
