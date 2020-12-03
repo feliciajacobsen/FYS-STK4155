@@ -98,7 +98,7 @@ class FFNN:
             x = self.activation_functions[i]((x @ self.weights[i]) + self.biases[i])
         return x
 
-    def back_prop(self, x, y, learning_rate, epochs, batch_size):
+    def back_prop(self, x, y, learning_rate, epochs, mini_batches):
         """
         This function trains the neural network
         for classification or regression.
@@ -114,7 +114,7 @@ class FFNN:
             epochs: int
                 specifies the no. of times the whole dataset has
                 been passed through and back the network.
-            batch_size: int
+            mini_batches: int
                 size of mini-batches to part the dataset in.
 
         Returns:
@@ -122,8 +122,9 @@ class FFNN:
             None
         """
         N = x.shape[0]
+        batch_size = floor(N/mini_batches)
         for e in range(epochs):
-            for batch in range(floor(N / batch_size)):
+            for batch in range(batch_size):
                 random_idx = np.random.randint(0, N, size=batch_size)
                 x_batch = x[random_idx]
                 y_batch = y[random_idx]
