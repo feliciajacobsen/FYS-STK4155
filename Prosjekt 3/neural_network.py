@@ -115,7 +115,7 @@ class FFNN:
                 specifies the no. of times the whole dataset has
                 been passed through and back the network.
             mini_batches: int
-                size of mini-batches to part the dataset in.
+                number of mini-batches to part the dataset in.
 
         Returns:
         --------

@@ -81,7 +81,7 @@ def ada_boost(X_train, y_train, X_test, y_test):
     new_idx = recursive_feat_elimination(X_train, y_train) # Index of kept features
     abc.fit(X_train[:,new_idx], y_train) # Train on training set with reduced features
     y_pred = abc.predict(X_test[:,new_idx]) # Predict on test set with reduced features
-
+    print("Accuracy obtained from AdaBoost and RFE of 20 features:")
     print(accuracy_score(y_test, y_pred)) # Print accuracy score
     # 0.9824561403508771
 
@@ -102,6 +102,7 @@ def ada_boost(X_train, y_train, X_test, y_test):
     abc.fit(X_train[:,new_idx], y_train)
     y_pred = abc.predict(X_test[:,new_idx])
 
+    print("Accuracy obtained from AdaBoost and feature treshold of 0.95 :")
     print(accuracy_score(y_test, y_pred))
     # 1.0 on one occasion
 
@@ -121,12 +122,14 @@ if __name__ == "__main__":
 
     ada_boost(X_train, y_train, X_test, y_test)
 
-    net = FFNN(
-        layers=[2, 80, 20, 1],
-        activation_functions=["tanh", "leaky_relu", "sigmoid"],
-    )
     # Train on training set
     new_idx = feature_treshold(X_train, y_train)
-    net.back_prop(X_train[:,new_idx], y_train, learning_rate=0.01, epochs=1000, batch_size=60)
+
+    net = FFNN(
+        layers=[len(new_idx), 80, 20, 1],
+        activation_functions=["tanh", "leaky_relu", "softmax"],
+    )
+
+    net.back_prop(X_train[:,new_idx], y_train, learning_rate=0.01, epochs=1000, mini_batches=60)
     y_pred = net.forward_pass(X_test[:,new_idx])
     #print(accuracy_score(y_test, y_pred))
