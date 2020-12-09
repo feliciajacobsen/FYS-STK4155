@@ -1,13 +1,12 @@
-from sklearn.datasets import load_breast_cancer
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.datasets import load_breast_cancer
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import AdaBoostClassifier
-from statsmodels.stats.outliers_influence import variance_inflation_factor
 # Local files:
 from neural_network import FFNN
 
@@ -133,36 +132,6 @@ def from_prob_to_class(y_pred):
         else:
             y_pred_new[i] = 0
     return y_pred_new
-
-
-
-def remove_multicoll(X, thresh):
-    """
-    Function takes input variables and removes multicollinear features based of
-    statistical VIF score of each feature in data set.
-
-    Params:
-    --------
-        X: pandas dataframe
-            dataframe of input variables.
-        thresh: float
-            number indicates threshold value of multicollinear score to remove.
-
-    Returns:
-    --------
-        Index of removed columns/features
-    """
-    cols = X.columns
-    variables = range(X.shape[1])
-
-    for i in np.arange(0, len(variables)):
-        vif = [
-            variance_inflation_factor(X[cols[variables]].values, ix)
-            for ix in np.arange(X[cols[variables]].values.shape[1])
-        ]
-        if max(vif) > thresh:
-            variables = np.delete(variables, vif.index(max(vif)))
-    return cols[variables]
 
 
 
