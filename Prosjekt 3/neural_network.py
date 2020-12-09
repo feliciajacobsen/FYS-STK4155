@@ -71,8 +71,8 @@ class FFNN:
                 self.activation_derivatives.append(lambda a : a*(1-a))
 
             elif activation_functions[i] == "binary":
-                activation_functions[i].append(lambda x : np.where(x >= 0.5, 1, 0))
-                activation_derivatives[i].append(lambda a : 0)
+                self.activation_functions.append(lambda x : np.where(x >= 0.5, 1, 0))
+                self.activation_derivatives.append(lambda a : 0)
 
             elif activation_functions[i] == "identity":
                 self.activation_functions.append(lambda x: x)

@@ -7,6 +7,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import AdaBoostClassifier
+from statsmodels.stats.outliers_influence import variance_inflation_factor
 # Local files:
 from neural_network import FFNN
 
@@ -44,92 +45,152 @@ def feature_treshold(X, y):
 
     kept_features = [x for x in range(X_train.shape[1]) if x not in dropped_features]
 
-    # Dropping columns with high corr
-    new_df = df.drop(df.columns[dropped_features], axis=1)
-
     # Printing labels of features which has been dropped
-    #print(labels[dropped_feat])
+    #print(labels[dropped_features])
 
     return kept_features
 
 
-def recursive_feat_elimination(X, y):
-    labels = load_breast_cancer().feature_names
 
-    abc = AdaBoostClassifier(
-        n_estimators=200,
-        algorithm="SAMME.R",
-        learning_rate=0.5,
-    )
-    rfe = RFE(estimator=abc, n_features_to_select=20)
-    rfe.fit(X_train, y_train)
+def recursive_feat_elimination(X, y, method, no_of_features):
+    labels = load_breast_cancer().feature_names
+    featues_idx = np.arange(X.shape[1])
+
+    if method == "boost":
+        model = AdaBoostClassifier(n_estimators=200, algorithm="SAMME.R", learning_rate=0.5)
+        rfe = RFE(estimator=model, n_features_to_select=no_of_features)
+        rfe.fit(X, y)
+        features_idx = rfe.support_
+
+    elif method == "network":
+        print("Warning: Gini index of Neural Network can not be extracted.")
+
+    else:
+        print("Warning: Classification model", model, "is not implemented.")
 
     # Print names of kept features
-    #print(labels[rfe.support_])
+    #print(labels[features_idx])
 
-    return rfe.support_
+    return features_idx
 
 
 def ada_boost(X_train, y_train, X_test, y_test):
-    abc = AdaBoostClassifier(
-        n_estimators=200,
-        algorithm="SAMME.R",
-        learning_rate=0.5,
-    )
+    abc1 = AdaBoostClassifier(n_estimators=300, algorithm="SAMME.R", learning_rate=0.5)
+    abc2 = AdaBoostClassifier(n_estimators=300, algorithm="SAMME.R", learning_rate=0.5)
+    abc3 = AdaBoostClassifier(n_estimators=300, algorithm="SAMME.R", learning_rate=0.5)
+
+    abc1.fit(X_train, y_train)
+    print("Accuracy obtained from AdaBoost with all features:")
+    print(accuracy_score(y_test, abc1.predict(X_test)))
 
     # Selected features off RFE
-    new_idx = recursive_feat_elimination(X_train, y_train) # Index of kept features
-    abc.fit(X_train[:,new_idx], y_train) # Train on training set with reduced features
-    y_pred = abc.predict(X_test[:,new_idx]) # Predict on test set with reduced features
-    print("Accuracy obtained from AdaBoost and RFE of 20 features:")
-    print(accuracy_score(y_test, y_pred)) # Print accuracy score
+    N = 15 # No. of features to select by RFE
+    new_idx = recursive_feat_elimination(X_train, y_train, "boost", N)  # Index of kept features
+    abc2.fit(X_train[:, new_idx], y_train)  # Train on training set with reduced features
+    y_pred = abc2.predict(
+        X_test[:, new_idx]
+    )  # Predict on test set with reduced features
+    print("Accuracy obtained from AdaBoost and RFE of", N ,"features:")
+    print(accuracy_score(y_test, y_pred))  # Print accuracy score
     # 0.9824561403508771
 
     # Plot confusion matrix
     plt.title("Accuracy scores of Wisconsin breast cancer dataset")
-    sns.heatmap(
-        confusion_matrix(y_test, y_pred),
-        cmap="Blues",
-        annot=True,
-        fmt="d",
-    )
+    sns.heatmap(confusion_matrix(y_test, y_pred), cmap="Blues", annot=True, fmt="d")
     plt.xlabel("Predicted label")
     plt.ylabel("True label")
     plt.show()
 
     # Selected features from treshold of 0.95 correlation index
     new_idx = feature_treshold(X_train, y_train)
-    abc.fit(X_train[:,new_idx], y_train)
-    y_pred = abc.predict(X_test[:,new_idx])
+    abc3.fit(X_train[:, new_idx], y_train)
+    y_pred = abc3.predict(X_test[:, new_idx])
 
     print("Accuracy obtained from AdaBoost and feature treshold of 0.95 :")
     print(accuracy_score(y_test, y_pred))
-    # 1.0 on one occasion
+    # 1.0
 
+
+def from_prob_to_class(y_pred):
+    """
+    Function takes array of probabilities and make the array binary to match
+    true target array.
+
+    Params:
+    --------
+        y_pred: vector
+            1D array of probabilities of having in benign cancer.
+    Returns:
+    --------
+        1D array of predicted classes consisting of 0=Malignant or 1=Benign
+    """
+
+    N = y_pred.shape[0]
+    y_pred_new = np.zeros(N)
+    for i in range(N):
+        if y_pred[i] >= 0.5:
+            y_pred_new[i] = 1
+        else:
+            y_pred_new[i] = 0
+    return y_pred_new
+
+
+
+def remove_multicoll(X, thresh):
+    """
+    Function takes input variables and removes multicollinear features based of
+    statistical VIF score of each feature in data set.
+
+    Params:
+    --------
+        X: pandas dataframe
+            dataframe of input variables.
+        thresh: float
+            number indicates threshold value of multicollinear score to remove.
+
+    Returns:
+    --------
+        Index of removed columns/features
+    """
+    cols = X.columns
+    variables = range(X.shape[1])
+
+    for i in np.arange(0, len(variables)):
+        vif = [
+            variance_inflation_factor(X[cols[variables]].values, ix)
+            for ix in np.arange(X[cols[variables]].values.shape[1])
+        ]
+        if max(vif) > thresh:
+            variables = np.delete(variables, vif.index(max(vif)))
+    return cols[variables]
 
 
 
 if __name__ == "__main__":
     data = load_breast_cancer(return_X_y=True)
     X = np.array(data[0])
-    y = np.array(data[1]) # 1 = Benign, 0 = Malignant
+    y = np.array(data[1])  # 1 = Benign, 0 = Malignant
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
+    y_train, y_test = y_train.reshape(-1, 1), y_test.reshape(-1, 1)
+
     #corr_matrix(X, y)
     #feature_treshold(X_train, y_train)
-    #recursive_feat_elimination(X_train, y_train)
+    #recursive_feat_elimination(X_train, y_train, "boost", 20)
 
     ada_boost(X_train, y_train, X_test, y_test)
 
     # Train on training set
-    new_idx = feature_treshold(X_train, y_train)
 
+    new_idx = feature_treshold(X_train, y_train) # np.arange(X_train.shape[1])
     net = FFNN(
-        layers=[len(new_idx), 80, 20, 1],
-        activation_functions=["tanh", "leaky_relu", "softmax"],
+        layers=[len(new_idx), 100, 80, 40, 20, 1],
+        activation_functions=["tanh", "tanh", "tanh", "tanh", "sigmoid"],
     )
-
-    net.back_prop(X_train[:,new_idx], y_train, learning_rate=0.01, epochs=1000, mini_batches=60)
-    y_pred = net.forward_pass(X_test[:,new_idx])
-    #print(accuracy_score(y_test, y_pred))
+    # accuracy = 0.92 with all features
+    # accuracy = 0.9649 with 23
+    net.back_prop(X_train[:, new_idx], y_train, learning_rate=0.01, epochs=3000, mini_batches=30)
+    y_pred = net.forward_pass(X_test[:, new_idx])
+    y_pred_new = from_prob_to_class(y_pred)
+    print(accuracy_score(y_test, y_pred_new))
