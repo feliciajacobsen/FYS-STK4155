@@ -259,14 +259,14 @@ if __name__ == "__main__":
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-    find_stumps(X_train, y_train, X_test, y_test)
+    #find_stumps(X_train, y_train, X_test, y_test)
 
 
     y_train, y_test = y_train.reshape(-1, 1), y_test.reshape(-1, 1)
 
-    #corr_matrix(X, y)
-    #feature_treshold(X_train)
-    #recursive_feat_elimination(X_train, y_train, "boost", 20)
+    corr_matrix(X, y)
+    feature_treshold(X_train)
+    recursive_feat_elimination(X_train, y_train, "boost", 20)
     ada_boost(X_train, y_train.ravel(), X_test, y_test.ravel())
 
     new_idx = feature_treshold(X_train, 0.95)
