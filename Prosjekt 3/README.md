@@ -2,8 +2,7 @@
 
 ### Files contains:
 * neural_network.py: Contains full implemented neural network. 
-* gradient_descent.py: Contains linear regression using stochastic gradient descent function.
-* franke.py: contains generated data and used for regression.
-* logistic regression: implemented logistic regression for multi-classification problem using stochastic gradient descent.
-* test_runs.txt: contains a text file of test runs of each of the functions in each of the .py-files.
+* feature_analysis.py: Contains plot of correlation matrix, confusion matrix, filtering and RFE of Wisconsin Breast cancer data with NN and AdaBoost. Serves as the main python file for this study.
 * report.pdf: contains full report.
+* figures : contains all figures which is used in report.pdf
+* test_runs : overview of printed results from feature_analysis.py
